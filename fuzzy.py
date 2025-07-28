@@ -4,6 +4,9 @@ from skfuzzy import control as ctrl
 import json
 import time
 
+tempo_total = 0
+tempo_idx = 0
+
 probabilidade = ctrl.Antecedent(np.arange(0, 11, 1), 'probabilidade')
 impacto = ctrl.Antecedent(np.arange(0, 11, 1), 'impacto')
 detectabilidade = ctrl.Antecedent(np.arange(0, 11, 1), 'detectabilidade')
@@ -77,7 +80,7 @@ def sensors_to_fuzzy(sensor_data):
     if lat == 0.0 and lon == 0.0:
         detect_base -= 7
     
-    tempo_atual_simulado = int(time.time())
+    tempo_atual_simulado = int(time.time() * 1000)
     if (tempo_atual_simulado - timestamp) > 300:
         detect_base -= 8
     detectabilidade_calculada = np.clip(detect_base, 0, 10)
@@ -94,6 +97,9 @@ def sensors_to_fuzzy(sensor_data):
     }
 
 def processar_payload_mqtt(json_payload, sim):
+
+    global tempo_total, tempo_idx
+
     # Recebe o payload do sensor e executa a inferência fuzzy.
     print("-----------------------------------\n")
     print("| >>> Nova leitura recebida via MQTT" + " (Simulação)" if sim else " (Real)")
@@ -113,7 +119,13 @@ def processar_payload_mqtt(json_payload, sim):
     tempo_inferencia_ms = (end_time - start_time) * 1000
     risco_calculado = simulador_risco.output['risco']
 
+    tempo_total += tempo_inferencia_ms
+    tempo_idx += 1
+
     print("\n| >>> Resultado da Inferência Fuzzy")
     print(f"| Nível de Risco Calculado (0-10): {risco_calculado:.2f}")
-    print(f"| Telemetria - Tempo de Inferência: {tempo_inferencia_ms:.4f} ms")
+    print(f"| Telemetria - Tempo de Inferência: {tempo_inferencia_ms:.4f} ms / Média : {tempo_total / (tempo_idx):.4f} ms")
     print("-----------------------------------\n")
+
+
+    
