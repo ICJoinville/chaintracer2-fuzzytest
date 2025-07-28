@@ -82,10 +82,10 @@ def sensors_to_fuzzy(sensor_data):
         detect_base -= 8
     detectabilidade_calculada = np.clip(detect_base, 0, 10)
 
-    print("\n>>> Camada de Tradução (Sensores -> Fuzzy)")
-    print(f"Impacto (0-10): {impacto_calculado:.2f}")
-    print(f"Probabilidade (0-10): {probabilidade_calculada:.2f}")
-    print(f"Detectabilidade (0-10): {detectabilidade_calculada:.2f}")
+    print("\n| >>> Camada de Tradução (Sensores -> Fuzzy)")
+    print(f"| Impacto (0-10): {impacto_calculado:.2f}")
+    print(f"| Probabilidade (0-10): {probabilidade_calculada:.2f}")
+    print(f"| Detectabilidade (0-10): {detectabilidade_calculada:.2f}")
 
     return {
         "probabilidade": probabilidade_calculada,
@@ -95,10 +95,10 @@ def sensors_to_fuzzy(sensor_data):
 
 def processar_payload_mqtt(json_payload, sim):
     # Recebe o payload do sensor e executa a inferência fuzzy.
-    
-    print(">>> Nova leitura recebida via MQTT" + " (Simulação)" if sim else " (Real)")
+    print("-----------------------------------\n")
+    print("| >>> Nova leitura recebida via MQTT" + " (Simulação)" if sim else " (Real)")
     sensor_data = json.loads(json_payload)
-    print(f"Payload Bruto: {sensor_data}")
+    print(f"| Payload Bruto: {sensor_data}")
 
     variaveis_fuzzy = sensors_to_fuzzy(sensor_data)
 
@@ -113,7 +113,7 @@ def processar_payload_mqtt(json_payload, sim):
     tempo_inferencia_ms = (end_time - start_time) * 1000
     risco_calculado = simulador_risco.output['risco']
 
-    print("\n>>> Resultado da Inferência Fuzzy")
-    print(f"Nível de Risco Calculado (0-10): {risco_calculado:.2f}")
-    print(f"Telemetria - Tempo de Inferência: {tempo_inferencia_ms:.4f} ms")
+    print("\n| >>> Resultado da Inferência Fuzzy")
+    print(f"| Nível de Risco Calculado (0-10): {risco_calculado:.2f}")
+    print(f"| Telemetria - Tempo de Inferência: {tempo_inferencia_ms:.4f} ms")
     print("-----------------------------------\n")
