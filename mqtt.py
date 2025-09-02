@@ -16,7 +16,7 @@ def connect():
     mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
     mqttc.on_connect = on_connect
     mqttc.on_message = on_message
-
-    mqttc.connect("broker.emqx.io", 1883, 60)
+    mqttc.username_pw_set("chaintracer","chaintracer")
+    mqttc.connect("10.42.0.1", 1883, 60)
 
     mqttc.loop_forever()
